@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Group, Line, Circle } from 'react-konva';
+import { Group, Line, Circle, Text } from 'react-konva';
 import type { PoseData } from '../../types';
 
 interface HumanFigureProps {
@@ -154,6 +154,25 @@ export const HumanFigure = memo(function HumanFigure({
         fill={color}
         stroke="#ffffff"
         strokeWidth={1.5}
+      />
+
+      {/* Foot labels */}
+      <Text
+        x={s.lFoot.x - thick * 1.2}
+        y={s.lFoot.y + thick * 0.5}
+        text="L"
+        fontSize={thick * 3}
+        fontStyle="bold"
+        fill={color}
+        opacity={0.5}
+      />
+      <Text
+        x={s.rFoot.x - thick * 1.2}
+        y={s.rFoot.y + thick * 0.5}
+        text="R"
+        fontSize={thick * 3}
+        fontStyle="bold"
+        fill={color}
       />
     </Group>
   );
