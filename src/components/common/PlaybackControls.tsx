@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import type { PlaybackSpeed } from '../../hooks/useAnimationLoop';
 
 interface PlaybackControlsProps {
@@ -43,7 +42,6 @@ export function PlaybackControls({
   onNextPhase,
   onPrevPhase,
 }: PlaybackControlsProps) {
-  const { t } = useTranslation();
 
   const handleScrub = (e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();

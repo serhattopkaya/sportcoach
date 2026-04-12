@@ -64,9 +64,14 @@ export function GuidePage() {
           <motion.div
             key={currentStep}
             custom={direction}
-            initial={(dir: number) => ({ x: dir > 0 ? 300 : -300, opacity: 0 })}
-            animate={{ x: 0, opacity: 1 }}
-            exit={(dir: number) => ({ x: dir > 0 ? -300 : 300, opacity: 0 })}
+            variants={{
+              enter: (dir: number) => ({ x: dir > 0 ? 300 : -300, opacity: 0 }),
+              center: { x: 0, opacity: 1 },
+              exit: (dir: number) => ({ x: dir > 0 ? -300 : 300, opacity: 0 }),
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}

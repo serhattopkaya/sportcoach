@@ -38,9 +38,30 @@ export interface AnimationKeyframe {
   entities: EntityState[];
 }
 
+export interface PoseData {
+  /** Torso tilt from vertical in degrees. Positive = lean forward (right). */
+  torsoTilt: number;
+  /** Left upper arm — absolute angle from straight down, clockwise positive. */
+  leftUpperArm: number;
+  /** Left forearm — absolute angle from straight down, clockwise positive. */
+  leftForearm: number;
+  /** Right upper arm — absolute angle from straight down, clockwise positive. */
+  rightUpperArm: number;
+  /** Right forearm — absolute angle from straight down, clockwise positive. */
+  rightForearm: number;
+  /** Left thigh — absolute angle from straight down, clockwise positive. */
+  leftThigh: number;
+  /** Left shin — absolute angle from straight down, clockwise positive. */
+  leftShin: number;
+  /** Right thigh — absolute angle from straight down, clockwise positive. */
+  rightThigh: number;
+  /** Right shin — absolute angle from straight down, clockwise positive. */
+  rightShin: number;
+}
+
 export interface EntityState {
   entityId: string;
-  type: 'player' | 'ball' | 'cone';
+  type: 'player' | 'ball' | 'cone' | 'person' | 'platform';
   team: 'A' | 'B' | 'neutral';
   label?: string;
   x: number;
@@ -48,6 +69,7 @@ export interface EntityState {
   rotation?: number;
   hasBall?: boolean;
   opacity?: number;
+  pose?: PoseData;
 }
 
 export interface GuideData {

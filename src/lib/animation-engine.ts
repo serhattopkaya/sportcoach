@@ -1,4 +1,12 @@
-import type { AnimationKeyframe, EntityState, AnimationPhase } from '../types';
+import type { AnimationKeyframe, EntityState, AnimationPhase, PoseData } from '../types';
+
+export const DEFAULT_POSE: PoseData = {
+  torsoTilt: 0,
+  leftUpperArm: 0, leftForearm: 0,
+  rightUpperArm: 0, rightForearm: 0,
+  leftThigh: 0, leftShin: 0,
+  rightThigh: 0, rightShin: 0,
+};
 
 export interface InterpolatedState {
   entities: EntityState[];
@@ -102,7 +110,25 @@ function lerpEntity(from: EntityState, to: EntityState, t: number): EntityState 
     opacity: lerp(from.opacity ?? 1, to.opacity ?? 1, t),
     hasBall: t < 0.5 ? from.hasBall : to.hasBall,
     label: to.label ?? from.label,
+    pose: lerpPose(from.pose, to.pose, t),
   };
+}
+
+const POSE_KEYS = Object.keys(DEFAULT_POSE) as (keyof PoseData)[];
+
+function lerpPose(
+  from: PoseData | undefined,
+  to: PoseData | undefined,
+  t: number,
+): PoseData | undefined {
+  if (!from && !to) return undefined;
+  const a = from ?? DEFAULT_POSE;
+  const b = to ?? DEFAULT_POSE;
+  const result = {} as PoseData;
+  for (const key of POSE_KEYS) {
+    result[key] = lerp(a[key], b[key], t);
+  }
+  return result;
 }
 
 function lerp(a: number, b: number, t: number): number {

@@ -1,7 +1,9 @@
 import { memo, useRef, useEffect, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Circle, Text, Group } from 'react-konva';
+import { Stage, Layer, Image as KonvaImage, Circle, Text, Group, Rect } from 'react-konva';
 import { getCourtConfig } from '../../lib/court-config';
-import { teamColors } from '../../lib/color-palette';
+import { sportColors, teamColors } from '../../lib/color-palette';
+import { DEFAULT_POSE } from '../../lib/animation-engine';
+import { HumanFigure } from './HumanFigure';
 import type { SportId, EntityState } from '../../types';
 
 interface CourtCanvasProps {
@@ -12,16 +14,6 @@ interface CourtCanvasProps {
 
 // Module-level image cache to avoid re-loading across mounts
 const imageCache = new Map<string, HTMLImageElement>();
-
-function loadCourtImage(src: string): HTMLImageElement | null {
-  const cached = imageCache.get(src);
-  if (cached) return cached;
-
-  const img = new window.Image();
-  img.src = src;
-  img.onload = () => imageCache.set(src, img);
-  return null;
-}
 
 export const CourtCanvas = memo(function CourtCanvas({ sportId, entities = [], maxHeight }: CourtCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -82,6 +74,41 @@ export const CourtCanvas = memo(function CourtCanvas({ sportId, entities = [], m
               const x = entity.x * dimensions.width;
               const y = entity.y * dimensions.height;
               const radius = Math.min(dimensions.width, dimensions.height) * 0.035;
+
+              if (entity.type === 'platform') {
+                const pw = dimensions.width * 0.22;
+                const ph = dimensions.height * 0.045;
+                return (
+                  <Rect
+                    key={entity.entityId}
+                    x={x - pw / 2}
+                    y={y - ph / 2}
+                    width={pw}
+                    height={ph}
+                    fill="#475569"
+                    stroke="#334155"
+                    strokeWidth={1.5}
+                    cornerRadius={3}
+                    opacity={entity.opacity ?? 1}
+                  />
+                );
+              }
+
+              if (entity.type === 'person') {
+                const figureHeight = dimensions.height * 0.62;
+                const figureColor = sportColors[sportId]?.accent ?? '#374151';
+                return (
+                  <HumanFigure
+                    key={entity.entityId}
+                    x={x}
+                    y={y}
+                    figureHeight={figureHeight}
+                    pose={entity.pose ?? DEFAULT_POSE}
+                    color={figureColor}
+                    opacity={entity.opacity ?? 1}
+                  />
+                );
+              }
 
               if (entity.type === 'ball') {
                 return (

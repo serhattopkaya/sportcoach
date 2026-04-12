@@ -1,4 +1,115 @@
-import type { Drill } from '../../types';
+import type { Drill, PoseData, EntityState, AnimationKeyframe } from '../../types';
+
+// ─── Reusable stick-figure poses (side-view, figure facing right) ────
+
+const STAND: PoseData = {
+  torsoTilt: 0,
+  leftUpperArm: 5, leftForearm: 15,
+  rightUpperArm: -5, rightForearm: -15,
+  leftThigh: 0, leftShin: 0,
+  rightThigh: 0, rightShin: 0,
+};
+
+const WIDE_ARMS: PoseData = {
+  torsoTilt: 0,
+  leftUpperArm: 15, leftForearm: 45,
+  rightUpperArm: -15, rightForearm: -45,
+  leftThigh: 0, leftShin: 0,
+  rightThigh: 0, rightShin: 0,
+};
+
+const R_LIFT: PoseData = {
+  torsoTilt: 5,
+  leftUpperArm: -20, leftForearm: -30,
+  rightUpperArm: 25, rightForearm: 110,
+  leftThigh: -5, leftShin: -3,
+  rightThigh: 55, rightShin: 5,
+};
+
+const R_PLANT: PoseData = {
+  torsoTilt: 3,
+  leftUpperArm: -10, leftForearm: -15,
+  rightUpperArm: 10, rightForearm: 30,
+  leftThigh: -18, leftShin: -5,
+  rightThigh: 12, rightShin: 5,
+};
+
+const L_LIFT: PoseData = {
+  torsoTilt: 3,
+  leftUpperArm: 25, leftForearm: 110,
+  rightUpperArm: -15, rightForearm: -25,
+  leftThigh: 45, leftShin: 10,
+  rightThigh: 3, rightShin: 0,
+};
+
+const R_REACH_DOWN: PoseData = {
+  torsoTilt: -3,
+  leftUpperArm: 20, leftForearm: 90,
+  rightUpperArm: -20, rightForearm: -30,
+  leftThigh: 5, leftShin: 0,
+  rightThigh: -30, rightShin: -20,
+};
+
+const SPLIT_RL: PoseData = {
+  torsoTilt: -2,
+  leftUpperArm: 8, leftForearm: 30,
+  rightUpperArm: -8, rightForearm: -15,
+  leftThigh: 15, leftShin: 5,
+  rightThigh: -10, rightShin: 0,
+};
+
+const L_REACH_DOWN: PoseData = {
+  torsoTilt: -2,
+  leftUpperArm: -20, leftForearm: -30,
+  rightUpperArm: 20, rightForearm: 90,
+  leftThigh: -25, leftShin: -15,
+  rightThigh: 5, rightShin: 0,
+};
+
+const L_KNEE_HIGH: PoseData = {
+  torsoTilt: 2,
+  leftUpperArm: -15, leftForearm: -20,
+  rightUpperArm: 20, rightForearm: 90,
+  leftThigh: 80, leftShin: -70,
+  rightThigh: 3, rightShin: 0,
+};
+
+const R_REACH_FWD: PoseData = {
+  torsoTilt: 3,
+  leftUpperArm: -15, leftForearm: -20,
+  rightUpperArm: 20, rightForearm: 90,
+  leftThigh: 5, leftShin: 0,
+  rightThigh: 30, rightShin: 20,
+};
+
+const L_REACH_FWD: PoseData = {
+  torsoTilt: 2,
+  leftUpperArm: 20, leftForearm: 90,
+  rightUpperArm: -15, rightForearm: -20,
+  leftThigh: 25, leftShin: 15,
+  rightThigh: 5, rightShin: 0,
+};
+
+const TURN_STEP: PoseData = {
+  torsoTilt: -8,
+  leftUpperArm: 15, leftForearm: 50,
+  rightUpperArm: -10, rightForearm: -20,
+  leftThigh: 5, leftShin: 0,
+  rightThigh: -5, rightShin: 0,
+};
+
+// ─── Helpers ─────────────────────────────────────────────────────────
+
+const PLAT: EntityState = Object.freeze({ entityId: 'platform', type: 'platform', team: 'neutral', x: 0.55, y: 0.82 }) as EntityState;
+
+function kf(t: number, x: number, y: number, pose: PoseData): AnimationKeyframe {
+  return { timeMs: t, entities: [PLAT, { entityId: 'person', type: 'person' as const, team: 'neutral' as const, x, y, pose }] };
+}
+
+// Common y positions
+const FY = 0.56;   // hips on floor
+const SY = 0.49;   // hips on step
+const TY = 0.52;   // transitioning
 
 export const stepAerobicDrills: Drill[] = [
   // ─── 1. Warm-up: March and Tap ───────────────────────────────────────
@@ -100,36 +211,15 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.basic-step.phase4.name', descriptionKey: 'step-aerobic.anim.basic-step.phase4.description', startMs: 6000, endMs: 8000 },
       ],
       keyframes: [
-        // Start: both feet on floor behind the step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: Right foot UP onto step (right side)
-        { timeMs: 2000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 2: Left foot UP onto step (left side)
-        { timeMs: 4000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 3: Right foot DOWN behind step
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 4: Left foot DOWN behind step
-        { timeMs: 8000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
+        kf(0,    0.38, FY,   STAND),
+        kf(1000, 0.40, 0.55, R_LIFT),
+        kf(2000, 0.47, TY,   R_PLANT),
+        kf(3000, 0.50, 0.50, L_LIFT),
+        kf(4000, 0.53, SY,   STAND),
+        kf(5000, 0.50, 0.51, R_REACH_DOWN),
+        kf(6000, 0.46, 0.54, SPLIT_RL),
+        kf(7000, 0.41, 0.55, L_REACH_DOWN),
+        kf(8000, 0.38, FY,   STAND),
       ],
     },
   },
@@ -187,36 +277,15 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.v-step.phase4.name', descriptionKey: 'step-aerobic.anim.v-step.phase4.description', startMs: 6000, endMs: 8000 },
       ],
       keyframes: [
-        // Start: both feet on floor behind step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: Right foot UP to wide right on step
-        { timeMs: 2000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 2: Left foot UP to wide left on step
-        { timeMs: 4000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 3: Right foot DOWN to center behind
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 4: Left foot DOWN to center behind
-        { timeMs: 8000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
+        kf(0,    0.38, FY,   STAND),
+        kf(1000, 0.40, 0.55, R_LIFT),
+        kf(2000, 0.47, TY,   R_PLANT),
+        kf(3000, 0.50, 0.50, L_LIFT),
+        kf(4000, 0.53, SY,   WIDE_ARMS),
+        kf(5000, 0.50, 0.51, R_REACH_DOWN),
+        kf(6000, 0.46, 0.54, SPLIT_RL),
+        kf(7000, 0.41, 0.55, L_REACH_DOWN),
+        kf(8000, 0.38, FY,   STAND),
       ],
     },
   },
@@ -274,36 +343,15 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.a-step.phase4.name', descriptionKey: 'step-aerobic.anim.a-step.phase4.description', startMs: 6000, endMs: 8000 },
       ],
       keyframes: [
-        // Start: both feet on floor behind step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: Right foot UP onto step (right side)
-        { timeMs: 2000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 2: Left foot UP onto step (left side)
-        { timeMs: 4000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 3: Right foot DOWN in front of step
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.32 },
-        ]},
-        // Count 4: Left foot DOWN in front of step
-        { timeMs: 8000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.32 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.32 },
-        ]},
+        kf(0,    0.38, FY,   STAND),
+        kf(1000, 0.40, 0.55, R_LIFT),
+        kf(2000, 0.47, TY,   R_PLANT),
+        kf(3000, 0.50, 0.50, L_LIFT),
+        kf(4000, 0.53, SY,   STAND),
+        kf(5000, 0.57, 0.51, R_REACH_FWD),
+        kf(6000, 0.62, 0.54, L_REACH_FWD),
+        kf(7000, 0.66, 0.55, L_REACH_DOWN),
+        kf(8000, 0.68, FY,   STAND),
       ],
     },
   },
@@ -361,36 +409,15 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.turn-step.phase4.name', descriptionKey: 'step-aerobic.anim.turn-step.phase4.description', startMs: 6000, endMs: 8000 },
       ],
       keyframes: [
-        // Start: both feet on floor behind step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: Right foot UP onto step
-        { timeMs: 2000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 2: Left foot UP, body turns 90° — feet shift to face side
-        { timeMs: 4000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.50, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.50, y: 0.46 },
-        ]},
-        // Count 3: Right foot DOWN to right side of step
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.50, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.50 },
-        ]},
-        // Count 4: Left foot DOWN next to right
-        { timeMs: 8000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.66, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.46 },
-        ]},
+        kf(0,    0.38, FY,   STAND),
+        kf(1000, 0.40, 0.55, R_LIFT),
+        kf(2000, 0.47, TY,   R_PLANT),
+        kf(3000, 0.50, 0.50, L_LIFT),
+        kf(4000, 0.53, SY,   TURN_STEP),
+        kf(5000, 0.50, 0.51, R_REACH_DOWN),
+        kf(6000, 0.46, 0.54, SPLIT_RL),
+        kf(7000, 0.41, 0.55, L_REACH_DOWN),
+        kf(8000, 0.38, FY,   STAND),
       ],
     },
   },
@@ -446,60 +473,17 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.knee-lift-combo.phase2.name', descriptionKey: 'step-aerobic.anim.knee-lift-combo.phase2.description', startMs: 6000, endMs: 12000 },
       ],
       keyframes: [
-        // Start: both feet on floor behind step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: Right foot UP onto step
-        { timeMs: 1500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 2: Left foot UP onto step
-        { timeMs: 3000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 3: Right foot DOWN behind step
-        { timeMs: 4500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 4: Left foot DOWN behind step
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 5: Right foot UP onto step
-        { timeMs: 7500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 6: Left knee lift — left foot rises high above step
-        { timeMs: 9000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.38 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 7: Left foot DOWN behind step
-        { timeMs: 10500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 8: Right foot DOWN behind step
-        { timeMs: 12000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
+        // Phase 1: Basic Step
+        kf(0,     0.38, FY,   STAND),
+        kf(1500,  0.47, TY,   R_PLANT),
+        kf(3000,  0.53, SY,   STAND),
+        kf(4500,  0.46, 0.54, SPLIT_RL),
+        kf(6000,  0.38, FY,   STAND),
+        // Phase 2: Step + Knee Lift
+        kf(7500,  0.47, TY,   R_PLANT),
+        kf(9000,  0.53, SY,   L_KNEE_HIGH),
+        kf(10500, 0.46, 0.54, SPLIT_RL),
+        kf(12000, 0.38, FY,   STAND),
       ],
     },
   },
@@ -555,60 +539,17 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.l-step-tap.phase2.name', descriptionKey: 'step-aerobic.anim.l-step-tap.phase2.description', startMs: 6000, endMs: 12000 },
       ],
       keyframes: [
-        // Start: both feet on floor behind step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: Right foot UP onto step
-        { timeMs: 1500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 2: Left foot UP onto step
-        { timeMs: 3000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 3: Right foot DOWN to right side of step
-        { timeMs: 4500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.50 },
-        ]},
-        // Count 4: Left foot TAP next to right (on floor beside step)
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.66, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.50 },
-        ]},
-        // Count 5: Left foot back UP on step
-        { timeMs: 7500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.50 },
-        ]},
-        // Count 6: Right foot UP on step
-        { timeMs: 9000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 7: Left foot DOWN behind step
-        { timeMs: 10500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 8: Right foot DOWN behind step
-        { timeMs: 12000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
+        // Phase 1: Step up, step to side, tap
+        kf(0,     0.38, FY,   STAND),
+        kf(1500,  0.47, TY,   R_PLANT),
+        kf(3000,  0.53, SY,   STAND),
+        kf(4500,  0.50, 0.51, R_REACH_DOWN),
+        kf(6000,  0.46, 0.54, SPLIT_RL),
+        // Phase 2: Return
+        kf(7500,  0.50, 0.50, L_LIFT),
+        kf(9000,  0.53, SY,   STAND),
+        kf(10500, 0.46, 0.54, SPLIT_RL),
+        kf(12000, 0.38, FY,   STAND),
       ],
     },
   },
@@ -664,60 +605,17 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.8-count-routine.phase2.name', descriptionKey: 'step-aerobic.anim.8-count-routine.phase2.description', startMs: 6000, endMs: 12000 },
       ],
       keyframes: [
-        // Start: both feet on floor behind step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: Right foot UP onto step — Basic Step
-        { timeMs: 1500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 2: Left foot UP onto step
-        { timeMs: 3000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 3: Right foot DOWN behind step
-        { timeMs: 4500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 4: Left foot DOWN behind step
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 5: Right foot UP to wide right on step — V-Step
-        { timeMs: 7500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 6: Left foot UP to wide left on step
-        { timeMs: 9000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 7: Right foot DOWN to center behind
-        { timeMs: 10500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 8: Left foot DOWN to center behind
-        { timeMs: 12000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
+        // Phase 1: Basic Step (counts 1-4)
+        kf(0,     0.38, FY,   STAND),
+        kf(1500,  0.47, TY,   R_PLANT),
+        kf(3000,  0.53, SY,   STAND),
+        kf(4500,  0.46, 0.54, SPLIT_RL),
+        kf(6000,  0.38, FY,   STAND),
+        // Phase 2: V-Step (counts 5-8)
+        kf(7500,  0.47, TY,   R_PLANT),
+        kf(9000,  0.53, SY,   WIDE_ARMS),
+        kf(10500, 0.46, 0.54, SPLIT_RL),
+        kf(12000, 0.38, FY,   STAND),
       ],
     },
   },
@@ -782,208 +680,43 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.32-count-choreo.phase4.name', descriptionKey: 'step-aerobic.anim.32-count-choreo.phase4.description', startMs: 12000, endMs: 16000 },
       ],
       keyframes: [
-        // ── Counts 1-8: Basic Step x2 ──
-        // Start: both feet behind step
-        { timeMs: 0, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 1: R up
-        { timeMs: 500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 2: L up
-        { timeMs: 1000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 3: R down
-        { timeMs: 1500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 4: L down
-        { timeMs: 2000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 5: L up (lead switch)
-        { timeMs: 2500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 6: R up
-        { timeMs: 3000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 7: L down
-        { timeMs: 3500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 8: R down
-        { timeMs: 4000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // ── Counts 9-16: V-Step x2 ──
-        // Count 9: R up wide right
-        { timeMs: 4500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 10: L up wide left
-        { timeMs: 5000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 11: R down center
-        { timeMs: 5500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 12: L down center
-        { timeMs: 6000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 13: L up wide left (lead switch)
-        { timeMs: 6500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 14: R up wide right
-        { timeMs: 7000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.40, y: 0.48 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 15: L down center
-        { timeMs: 7500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.60, y: 0.48 },
-        ]},
-        // Count 16: R down center
-        { timeMs: 8000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // ── Counts 17-24: A-Step x2 ──
-        // Count 17: R up onto step
-        { timeMs: 8500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 18: L up onto step
-        { timeMs: 9000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 19: R down front
-        { timeMs: 9500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.32 },
-        ]},
-        // Count 20: L down front
-        { timeMs: 10000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.32 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.32 },
-        ]},
-        // Count 21: R up onto step (return)
-        { timeMs: 10500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.32 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 22: L up onto step
-        { timeMs: 11000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 23: R down behind
-        { timeMs: 11500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // Count 24: L down behind
-        { timeMs: 12000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
-        // ── Counts 25-32: Turn Step x2 ──
-        // Count 25: R up onto step
-        { timeMs: 12500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 26: L up + turn
-        { timeMs: 13000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.50, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.50, y: 0.46 },
-        ]},
-        // Count 27: R down to side
-        { timeMs: 13500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.50, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.50 },
-        ]},
-        // Count 28: L down next to R
-        { timeMs: 14000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.66, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.46 },
-        ]},
-        // Count 29: L up onto step (return turn)
-        { timeMs: 14500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.50, y: 0.54 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.66, y: 0.46 },
-        ]},
-        // Count 30: R up + turn back
-        { timeMs: 15000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.50 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 31: L down behind
-        { timeMs: 15500, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.50 },
-        ]},
-        // Count 32: R down behind — finish
-        { timeMs: 16000, entities: [
-          { entityId: 'step', type: 'cone', team: 'neutral', x: 0.5, y: 0.5 },
-          { entityId: 'lf', type: 'player', team: 'A', label: 'L', x: 0.46, y: 0.68 },
-          { entityId: 'rf', type: 'player', team: 'B', label: 'R', x: 0.54, y: 0.68 },
-        ]},
+        // ── Phase 1: Basic Step x2 (counts 1-8) ──
+        kf(0,     0.38, FY,   STAND),
+        kf(500,   0.40, 0.55, R_LIFT),
+        kf(1000,  0.53, SY,   STAND),
+        kf(1500,  0.46, 0.54, SPLIT_RL),
+        kf(2000,  0.38, FY,   STAND),
+        kf(2500,  0.50, 0.50, L_LIFT),
+        kf(3000,  0.53, SY,   STAND),
+        kf(3500,  0.41, 0.55, L_REACH_DOWN),
+        kf(4000,  0.38, FY,   STAND),
+        // ── Phase 2: V-Step x2 (counts 9-16) ──
+        kf(4500,  0.40, 0.55, R_LIFT),
+        kf(5000,  0.53, SY,   WIDE_ARMS),
+        kf(5500,  0.46, 0.54, SPLIT_RL),
+        kf(6000,  0.38, FY,   STAND),
+        kf(6500,  0.50, 0.50, L_LIFT),
+        kf(7000,  0.53, SY,   WIDE_ARMS),
+        kf(7500,  0.41, 0.55, L_REACH_DOWN),
+        kf(8000,  0.38, FY,   STAND),
+        // ── Phase 3: A-Step x2 (counts 17-24) ──
+        kf(8500,  0.40, 0.55, R_LIFT),
+        kf(9000,  0.53, SY,   STAND),
+        kf(9500,  0.57, 0.51, R_REACH_FWD),
+        kf(10000, 0.68, FY,   STAND),
+        kf(10500, 0.62, TY,   R_PLANT),
+        kf(11000, 0.53, SY,   STAND),
+        kf(11500, 0.41, 0.55, L_REACH_DOWN),
+        kf(12000, 0.38, FY,   STAND),
+        // ── Phase 4: Turn Step x2 (counts 25-32) ──
+        kf(12500, 0.40, 0.55, R_LIFT),
+        kf(13000, 0.53, SY,   TURN_STEP),
+        kf(13500, 0.46, 0.54, SPLIT_RL),
+        kf(14000, 0.38, FY,   STAND),
+        kf(14500, 0.40, 0.55, R_LIFT),
+        kf(15000, 0.53, SY,   TURN_STEP),
+        kf(15500, 0.41, 0.55, L_REACH_DOWN),
+        kf(16000, 0.38, FY,   STAND),
       ],
     },
   },

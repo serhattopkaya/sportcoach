@@ -6,6 +6,7 @@ export type {
   AnimationPhase,
   AnimationKeyframe,
   EntityState,
+  PoseData,
   GuideData,
   GuideStep,
 } from './drill';
