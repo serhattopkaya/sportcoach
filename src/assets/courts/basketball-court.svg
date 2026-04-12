@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 500" fill="none">
+  <!-- Court outline -->
+  <rect x="10" y="10" width="920" height="480" stroke="#94a3b8" stroke-width="2" fill="white" rx="2"/>
+
+  <!-- Center line -->
+  <line x1="470" y1="10" x2="470" y2="490" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Center circle -->
+  <circle cx="470" cy="250" r="60" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <circle cx="470" cy="250" r="4" fill="#94a3b8"/>
+
+  <!-- Left key (paint area) -->
+  <rect x="10" y="170" width="190" height="160" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Left free throw circle -->
+  <circle cx="200" cy="250" r="60" stroke="#94a3b8" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+  <path d="M 200 190 A 60 60 0 0 1 200 310" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Left basket -->
+  <rect x="10" y="220" width="15" height="60" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <circle cx="55" cy="250" r="8" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+  <!-- Left 3-point arc -->
+  <path d="M 10 90 L 140 90 A 180 180 0 0 1 140 410 L 10 410" stroke="#94a3b8" stroke-width="2" fill="none"/>
+
+  <!-- Right key (paint area) -->
+  <rect x="740" y="170" width="190" height="160" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Right free throw circle -->
+  <circle cx="740" cy="250" r="60" stroke="#94a3b8" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+  <path d="M 740 310 A 60 60 0 0 1 740 190" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Right basket -->
+  <rect x="915" y="220" width="15" height="60" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <circle cx="885" cy="250" r="8" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+  <!-- Right 3-point arc -->
+  <path d="M 930 90 L 800 90 A 180 180 0 0 0 800 410 L 930 410" stroke="#94a3b8" stroke-width="2" fill="none"/>
+</svg>

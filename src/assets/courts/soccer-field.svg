@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 680" fill="none">
+  <!-- Field outline -->
+  <rect x="10" y="10" width="1030" height="660" stroke="#94a3b8" stroke-width="2" fill="white" rx="2"/>
+
+  <!-- Center line -->
+  <line x1="525" y1="10" x2="525" y2="670" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Center circle -->
+  <circle cx="525" cy="340" r="73" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <circle cx="525" cy="340" r="4" fill="#94a3b8"/>
+
+  <!-- Left penalty area -->
+  <rect x="10" y="182" width="132" height="316" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Left goal area -->
+  <rect x="10" y="248" width="44" height="184" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Left penalty spot -->
+  <circle cx="98" cy="340" r="3" fill="#94a3b8"/>
+  <!-- Left penalty arc -->
+  <path d="M 142 290 A 73 73 0 0 1 142 390" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Left goal -->
+  <rect x="2" y="308" width="8" height="64" stroke="#94a3b8" stroke-width="2" fill="none"/>
+
+  <!-- Right penalty area -->
+  <rect x="908" y="182" width="132" height="316" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Right goal area -->
+  <rect x="996" y="248" width="44" height="184" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Right penalty spot -->
+  <circle cx="952" cy="340" r="3" fill="#94a3b8"/>
+  <!-- Right penalty arc -->
+  <path d="M 908 290 A 73 73 0 0 0 908 390" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <!-- Right goal -->
+  <rect x="1040" y="308" width="8" height="64" stroke="#94a3b8" stroke-width="2" fill="none"/>
+
+  <!-- Corner arcs -->
+  <path d="M 20 10 A 10 10 0 0 0 10 20" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 1030 10 A 10 10 0 0 1 1040 20" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 10 660 A 10 10 0 0 0 20 670" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 1040 660 A 10 10 0 0 1 1030 670" stroke="#94a3b8" stroke-width="2" fill="none"/>
+</svg>

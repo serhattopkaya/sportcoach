@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-basketball: #f97316;
+  --color-soccer: #22c55e;
+  --color-volleyball: #3b82f6;
+  --color-handball: #ef4444;
+
+  --color-team-a: #3b82f6;
+  --color-team-b: #ef4444;
+
+  --color-surface: #f8fafc;
+  --color-surface-alt: #f1f5f9;
+  --color-border: #e2e8f0;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
