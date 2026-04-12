@@ -48,8 +48,11 @@
     "equipment": "Ausrüstung",
     "viewGuide": "Schritt-für-Schritt",
     "viewAnimation": "Animation ansehen",
+    "viewVideo": "Video ansehen",
     "noGuide": "Keine Anleitung verfügbar",
-    "noAnimation": "Keine Animation verfügbar"
+    "noAnimation": "Keine Animation verfügbar",
+    "viewBehind": "Rückansicht",
+    "viewSide": "Seitenansicht"
   },
   "guide": {
     "step": "Schritt {{number}}",

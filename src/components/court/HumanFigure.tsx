@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Group, Line, Circle, Text } from 'react-konva';
-import type { PoseData } from '../../types';
+import type { PoseData, AnimationPerspective } from '../../types';
 
 interface HumanFigureProps {
   x: number;
@@ -9,6 +9,7 @@ interface HumanFigureProps {
   pose: PoseData;
   color: string;
   opacity?: number;
+  perspective?: AnimationPerspective;
 }
 
 interface Pt {
@@ -87,11 +88,15 @@ export const HumanFigure = memo(function HumanFigure({
   pose,
   color,
   opacity = 1,
+  perspective = 'side',
 }: HumanFigureProps) {
   const s = computeSkeleton({ x, y }, pose, figureHeight);
   const thick = Math.max(2, figureHeight * 0.025);
   const thin = thick * 0.75;
   const jointR = thick * 0.55;
+
+  // Behind view: both sides equally visible; side view: far side at 0.5 opacity
+  const farOpacity = perspective === 'behind' ? 0.85 : 0.5;
 
   return (
     <Group opacity={opacity}>
@@ -102,7 +107,7 @@ export const HumanFigure = memo(function HumanFigure({
         strokeWidth={thin}
         lineCap="round"
         lineJoin="round"
-        opacity={0.5}
+        opacity={farOpacity}
       />
       <Line
         points={[s.hip.x, s.hip.y, s.lKnee.x, s.lKnee.y, s.lFoot.x, s.lFoot.y]}
@@ -110,7 +115,7 @@ export const HumanFigure = memo(function HumanFigure({
         strokeWidth={thick}
         lineCap="round"
         lineJoin="round"
-        opacity={0.5}
+        opacity={farOpacity}
       />
 
       {/* Torso + neck */}
@@ -141,9 +146,9 @@ export const HumanFigure = memo(function HumanFigure({
       {/* Joint dots */}
       <Circle x={s.hip.x} y={s.hip.y} radius={jointR} fill={color} />
       <Circle x={s.shoulder.x} y={s.shoulder.y} radius={jointR} fill={color} />
-      <Circle x={s.lKnee.x} y={s.lKnee.y} radius={jointR} fill={color} opacity={0.5} />
+      <Circle x={s.lKnee.x} y={s.lKnee.y} radius={jointR} fill={color} opacity={farOpacity} />
       <Circle x={s.rKnee.x} y={s.rKnee.y} radius={jointR} fill={color} />
-      <Circle x={s.lElbow.x} y={s.lElbow.y} radius={jointR * 0.8} fill={color} opacity={0.5} />
+      <Circle x={s.lElbow.x} y={s.lElbow.y} radius={jointR * 0.8} fill={color} opacity={farOpacity} />
       <Circle x={s.rElbow.x} y={s.rElbow.y} radius={jointR * 0.8} fill={color} />
 
       {/* Head */}
@@ -164,7 +169,7 @@ export const HumanFigure = memo(function HumanFigure({
         fontSize={thick * 3}
         fontStyle="bold"
         fill={color}
-        opacity={0.5}
+        opacity={farOpacity}
       />
       <Text
         x={s.rFoot.x - thick * 1.2}

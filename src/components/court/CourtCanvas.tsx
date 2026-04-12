@@ -4,34 +4,39 @@ import { getCourtConfig } from '../../lib/court-config';
 import { sportColors, teamColors } from '../../lib/color-palette';
 import { DEFAULT_POSE } from '../../lib/animation-engine';
 import { HumanFigure } from './HumanFigure';
-import type { SportId, EntityState } from '../../types';
+import type { SportId, EntityState, AnimationPerspective } from '../../types';
 
 interface CourtCanvasProps {
   sportId: SportId;
   entities?: EntityState[];
   maxHeight?: number;
+  perspective?: AnimationPerspective;
 }
 
 // Module-level image cache to avoid re-loading across mounts
 const imageCache = new Map<string, HTMLImageElement>();
 
-export const CourtCanvas = memo(function CourtCanvas({ sportId, entities = [], maxHeight }: CourtCanvasProps) {
+export const CourtCanvas = memo(function CourtCanvas({ sportId, entities = [], maxHeight, perspective = 'side' }: CourtCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [courtImage, setCourtImage] = useState<HTMLImageElement | null>(null);
   const config = getCourtConfig(sportId);
+  const [, setImageVersion] = useState(0);
+  const courtImage = imageCache.get(config.svgPath) ?? null;
 
   useEffect(() => {
-    const cached = imageCache.get(config.svgPath);
-    if (cached) {
-      setCourtImage(cached);
-      return;
-    }
+    let cancelled = false;
+    if (imageCache.has(config.svgPath)) return;
+
     const img = new window.Image();
     img.src = config.svgPath;
     img.onload = () => {
+      if (cancelled) return;
       imageCache.set(config.svgPath, img);
-      setCourtImage(img);
+      setImageVersion((version) => version + 1);
+    };
+
+    return () => {
+      cancelled = true;
     };
   }, [config.svgPath]);
 
@@ -106,6 +111,7 @@ export const CourtCanvas = memo(function CourtCanvas({ sportId, entities = [], m
                     pose={entity.pose ?? DEFAULT_POSE}
                     color={figureColor}
                     opacity={entity.opacity ?? 1}
+                    perspective={perspective}
                   />
                 );
               }

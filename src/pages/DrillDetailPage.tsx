@@ -71,20 +71,22 @@ export function DrillDetailPage() {
         </button>
 
         <button
-          onClick={() => drill.features.hasAnimation && navigate(`/drill/${drill.id}/animation`)}
-          disabled={!drill.features.hasAnimation}
+          onClick={() => (drill.features.hasAnimation || drill.youtubeVideoId) && navigate(`/drill/${drill.id}/animation`)}
+          disabled={!drill.features.hasAnimation && !drill.youtubeVideoId}
           className="w-full p-4 rounded-xl text-left transition-all min-h-[64px] flex items-center gap-4 border-2"
           style={{
-            borderColor: drill.features.hasAnimation ? colors.bg : '#e2e8f0',
-            opacity: drill.features.hasAnimation ? 1 : 0.5,
+            borderColor: (drill.features.hasAnimation || drill.youtubeVideoId) ? colors.bg : '#e2e8f0',
+            opacity: (drill.features.hasAnimation || drill.youtubeVideoId) ? 1 : 0.5,
           }}
         >
           <span className="text-2xl">▶️</span>
           <div>
-            <div className="font-semibold text-slate-800">{t('drill.viewAnimation')}</div>
+            <div className="font-semibold text-slate-800">
+              {drill.youtubeVideoId ? t('drill.viewVideo') : t('drill.viewAnimation')}
+            </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              {drill.features.hasAnimation
-                ? t('animation.play')
+              {(drill.features.hasAnimation || drill.youtubeVideoId)
+                ? drill.youtubeVideoId ? t('drill.viewVideo') : t('animation.play')
                 : t('drill.noAnimation')}
             </p>
           </div>

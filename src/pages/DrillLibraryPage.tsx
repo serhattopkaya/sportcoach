@@ -48,9 +48,9 @@ export function DrillLibraryPage() {
                   📋 {t('drill.viewGuide')}
                 </span>
               )}
-              {drill.features.hasAnimation && (
+              {(drill.features.hasAnimation || drill.youtubeVideoId) && (
                 <span className="text-xs px-2 py-0.5 rounded bg-purple-50 text-purple-700">
-                  ▶️ {t('drill.viewAnimation')}
+                  ▶️ {drill.youtubeVideoId ? t('drill.viewVideo') : t('drill.viewAnimation')}
                 </span>
               )}
             </div>

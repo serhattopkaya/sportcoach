@@ -40,8 +40,8 @@ export function useAnimationLoop(animation: AnimationData | undefined): Animatio
   const rafRef = useRef<number>(0);
 
   const durationMs = animation?.durationMs ?? 0;
-  const keyframes = animation?.keyframes ?? [];
-  const phases = animation?.phases ?? [];
+  const keyframes = useMemo(() => animation?.keyframes ?? [], [animation]);
+  const phases = useMemo(() => animation?.phases ?? [], [animation]);
 
   const tick = useCallback(() => {
     if (!playingRef.current) return;
@@ -81,6 +81,20 @@ export function useAnimationLoop(animation: AnimationData | undefined): Animatio
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    playingRef.current = false;
+    timeRef.current = 0;
+    lastFrameRef.current = 0;
+    lastRenderRef.current = 0;
+
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+    }
+
+    setRenderTick((t) => t + 1);
+  }, [animation]);
 
   const play = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);

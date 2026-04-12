@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(echo \"EXIT: $?\")",
+      "WebFetch(domain:www.youtube.com)",
+      "WebFetch(domain:consent.youtube.com)",
+      "Bash(curl -s -L -H \"Accept-Language: en-US,en;q=0.9\" -H \"Cookie: CONSENT=YES+1\" \"https://www.youtube.com/playlist?list=PLvftKxea83m740fFLEN7UqA0fXKZDZ59d\")",
+      "Bash(grep -o \"hasAnimation: true\" /Users/s.topkaya/Documents/04_Personal_Code/Sport/sport-coach/src/data/*/drills.ts)",
+      "Bash(grep -o \"hasGuide: true\" /Users/s.topkaya/Documents/04_Personal_Code/Sport/sport-coach/src/data/*/drills.ts)",
+      "Bash(grep -n \"pose:\" /Users/s.topkaya/Documents/04_Personal_Code/Sport/sport-coach/src/data/*/drills.ts)",
+      "Bash(grep -E \"\\\\.tsx$\")",
+      "Bash(grep \"youtubeVideoId\" /Users/s.topkaya/Documents/04_Personal_Code/Sport/sport-coach/src/types/*.ts)"
+    ]
+  }
+}

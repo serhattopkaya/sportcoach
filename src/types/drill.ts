@@ -18,12 +18,16 @@ export interface Drill {
   };
   animation?: AnimationData;
   guide?: GuideData;
+  youtubeVideoId?: string;
 }
+
+export type AnimationPerspective = 'side' | 'behind';
 
 export interface AnimationData {
   durationMs: number;
   phases: AnimationPhase[];
   keyframes: AnimationKeyframe[];
+  behindKeyframes?: AnimationKeyframe[];
 }
 
 export interface AnimationPhase {

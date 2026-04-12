@@ -73,7 +73,7 @@ export function Sidebar() {
                   {t('drill.minutes', { count: drill.durationMinutes })}
                 </span>
                 {drill.features.hasGuide && <span className="text-[10px]">📋</span>}
-                {drill.features.hasAnimation && <span className="text-[10px]">▶️</span>}
+                {(drill.features.hasAnimation || drill.youtubeVideoId) && <span className="text-[10px]">▶️</span>}
               </div>
             </button>
           );

@@ -3,6 +3,7 @@ export type {
   Difficulty,
   Drill,
   AnimationData,
+  AnimationPerspective,
   AnimationPhase,
   AnimationKeyframe,
   EntityState,

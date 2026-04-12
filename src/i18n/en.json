@@ -48,8 +48,11 @@
     "equipment": "Equipment",
     "viewGuide": "Step-by-Step Guide",
     "viewAnimation": "Watch Animation",
+    "viewVideo": "Watch Video",
     "noGuide": "No guide available",
-    "noAnimation": "No animation available"
+    "noAnimation": "No animation available",
+    "viewBehind": "Behind View",
+    "viewSide": "Side View"
   },
   "guide": {
     "step": "Step {{number}}",
