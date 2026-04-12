@@ -98,6 +98,46 @@ const TURN_STEP: PoseData = {
   rightThigh: -5, rightShin: 0,
 };
 
+const V_WIDE: PoseData = {
+  torsoTilt: 0,
+  leftUpperArm: -70, leftForearm: -30,
+  rightUpperArm: 70, rightForearm: 30,
+  leftThigh: 15, leftShin: 3,
+  rightThigh: -15, rightShin: -3,
+};
+
+const TURN_MID: PoseData = {
+  torsoTilt: -15,
+  leftUpperArm: 25, leftForearm: 60,
+  rightUpperArm: -20, rightForearm: -40,
+  leftThigh: 10, leftShin: 5,
+  rightThigh: -8, rightShin: -3,
+};
+
+const LATERAL_STEP: PoseData = {
+  torsoTilt: -5,
+  leftUpperArm: 15, leftForearm: 40,
+  rightUpperArm: -15, rightForearm: -40,
+  leftThigh: 20, leftShin: 10,
+  rightThigh: -20, rightShin: -10,
+};
+
+const TAP_SIDE: PoseData = {
+  torsoTilt: -3,
+  leftUpperArm: 10, leftForearm: 25,
+  rightUpperArm: -10, rightForearm: -25,
+  leftThigh: 5, leftShin: 0,
+  rightThigh: 30, rightShin: -15,
+};
+
+const ARMS_PUMP: PoseData = {
+  torsoTilt: 2,
+  leftUpperArm: -80, leftForearm: -30,
+  rightUpperArm: 80, rightForearm: 30,
+  leftThigh: 5, leftShin: 0,
+  rightThigh: 5, rightShin: 0,
+};
+
 // ─── Helpers ─────────────────────────────────────────────────────────
 
 const PLAT: EntityState = Object.freeze({ entityId: 'platform', type: 'platform', team: 'neutral', x: 0.55, y: 0.82 }) as EntityState;
@@ -277,15 +317,20 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.v-step.phase4.name', descriptionKey: 'step-aerobic.anim.v-step.phase4.description', startMs: 6000, endMs: 8000 },
       ],
       keyframes: [
-        kf(0,    0.38, FY,   STAND),
-        kf(1000, 0.40, 0.55, R_LIFT),
-        kf(2000, 0.47, TY,   R_PLANT),
-        kf(3000, 0.50, 0.50, L_LIFT),
-        kf(4000, 0.53, SY,   WIDE_ARMS),
-        kf(5000, 0.50, 0.51, R_REACH_DOWN),
-        kf(6000, 0.46, 0.54, SPLIT_RL),
-        kf(7000, 0.41, 0.55, L_REACH_DOWN),
-        kf(8000, 0.38, FY,   STAND),
+        // Phase 1: Right foot up, arms start opening
+        kf(0,    0.42, FY,   STAND),
+        kf(900,  0.45, 0.54, R_LIFT),
+        kf(1800, 0.50, TY,   WIDE_ARMS),
+        // Phase 2: Left foot up, wide V position at top
+        kf(2600, 0.52, 0.50, L_LIFT),
+        kf(3500, 0.50, SY,   V_WIDE),
+        // Phase 3: Hold wide, begin descent
+        kf(4400, 0.50, SY,   WIDE_ARMS),
+        kf(5200, 0.52, 0.51, R_REACH_DOWN),
+        // Phase 4: Return to start
+        kf(6200, 0.49, 0.53, SPLIT_RL),
+        kf(7200, 0.45, 0.55, L_REACH_DOWN),
+        kf(8000, 0.42, FY,   STAND),
       ],
     },
   },
@@ -409,14 +454,19 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.turn-step.phase4.name', descriptionKey: 'step-aerobic.anim.turn-step.phase4.description', startMs: 6000, endMs: 8000 },
       ],
       keyframes: [
+        // Phase 1: Approach and step up
         kf(0,    0.38, FY,   STAND),
-        kf(1000, 0.40, 0.55, R_LIFT),
-        kf(2000, 0.47, TY,   R_PLANT),
-        kf(3000, 0.50, 0.50, L_LIFT),
-        kf(4000, 0.53, SY,   TURN_STEP),
-        kf(5000, 0.50, 0.51, R_REACH_DOWN),
-        kf(6000, 0.46, 0.54, SPLIT_RL),
-        kf(7000, 0.41, 0.55, L_REACH_DOWN),
+        kf(1000, 0.42, 0.54, R_LIFT),
+        kf(2000, 0.50, TY,   R_PLANT),
+        // Phase 2: Step up and turn on platform
+        kf(2800, 0.53, SY,   TURN_STEP),
+        kf(3500, 0.55, SY,   TURN_MID),
+        kf(4200, 0.53, SY,   TURN_STEP),
+        // Phase 3: Step down after turn
+        kf(5200, 0.50, 0.51, R_REACH_DOWN),
+        kf(6200, 0.46, 0.54, SPLIT_RL),
+        // Phase 4: Return to start
+        kf(7200, 0.41, 0.55, L_REACH_DOWN),
         kf(8000, 0.38, FY,   STAND),
       ],
     },
@@ -473,16 +523,21 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.knee-lift-combo.phase2.name', descriptionKey: 'step-aerobic.anim.knee-lift-combo.phase2.description', startMs: 6000, endMs: 12000 },
       ],
       keyframes: [
-        // Phase 1: Basic Step
+        // Phase 1: Basic Step (reference pattern)
         kf(0,     0.38, FY,   STAND),
-        kf(1500,  0.47, TY,   R_PLANT),
+        kf(1000,  0.42, 0.54, R_LIFT),
+        kf(2000,  0.48, TY,   R_PLANT),
         kf(3000,  0.53, SY,   STAND),
-        kf(4500,  0.46, 0.54, SPLIT_RL),
+        kf(4000,  0.48, 0.53, SPLIT_RL),
+        kf(5000,  0.42, 0.55, L_REACH_DOWN),
         kf(6000,  0.38, FY,   STAND),
-        // Phase 2: Step + Knee Lift
-        kf(7500,  0.47, TY,   R_PLANT),
-        kf(9000,  0.53, SY,   L_KNEE_HIGH),
-        kf(10500, 0.46, 0.54, SPLIT_RL),
+        // Phase 2: Step up + Knee Drive
+        kf(7000,  0.42, 0.54, R_LIFT),
+        kf(8000,  0.48, TY,   R_PLANT),
+        kf(8700,  0.52, SY,   ARMS_PUMP),
+        kf(9400,  0.53, 0.45, L_KNEE_HIGH),
+        kf(10100, 0.53, SY,   STAND),
+        kf(10800, 0.48, 0.53, SPLIT_RL),
         kf(12000, 0.38, FY,   STAND),
       ],
     },
@@ -539,16 +594,20 @@ export const stepAerobicDrills: Drill[] = [
         { nameKey: 'step-aerobic.anim.l-step-tap.phase2.name', descriptionKey: 'step-aerobic.anim.l-step-tap.phase2.description', startMs: 6000, endMs: 12000 },
       ],
       keyframes: [
-        // Phase 1: Step up, step to side, tap
+        // Phase 1: Step up + lateral walk on step
         kf(0,     0.38, FY,   STAND),
-        kf(1500,  0.47, TY,   R_PLANT),
-        kf(3000,  0.53, SY,   STAND),
-        kf(4500,  0.50, 0.51, R_REACH_DOWN),
-        kf(6000,  0.46, 0.54, SPLIT_RL),
-        // Phase 2: Return
-        kf(7500,  0.50, 0.50, L_LIFT),
-        kf(9000,  0.53, SY,   STAND),
-        kf(10500, 0.46, 0.54, SPLIT_RL),
+        kf(1000,  0.42, 0.54, R_LIFT),
+        kf(2000,  0.48, TY,   R_PLANT),
+        kf(2800,  0.52, SY,   STAND),
+        kf(3500,  0.56, SY,   LATERAL_STEP),
+        kf(4200,  0.60, SY,   LATERAL_STEP),
+        kf(5000,  0.62, SY,   TAP_SIDE),
+        kf(6000,  0.58, SY,   LATERAL_STEP),
+        // Phase 2: Return to center and step down
+        kf(7000,  0.53, SY,   STAND),
+        kf(8000,  0.50, 0.51, R_REACH_DOWN),
+        kf(9000,  0.46, 0.53, SPLIT_RL),
+        kf(10500, 0.42, 0.55, L_REACH_DOWN),
         kf(12000, 0.38, FY,   STAND),
       ],
     },
@@ -607,14 +666,19 @@ export const stepAerobicDrills: Drill[] = [
       keyframes: [
         // Phase 1: Basic Step (counts 1-4)
         kf(0,     0.38, FY,   STAND),
-        kf(1500,  0.47, TY,   R_PLANT),
+        kf(1000,  0.42, 0.54, R_LIFT),
+        kf(2000,  0.48, TY,   R_PLANT),
         kf(3000,  0.53, SY,   STAND),
-        kf(4500,  0.46, 0.54, SPLIT_RL),
+        kf(4000,  0.48, 0.53, SPLIT_RL),
+        kf(5000,  0.42, 0.55, L_REACH_DOWN),
         kf(6000,  0.38, FY,   STAND),
         // Phase 2: V-Step (counts 5-8)
-        kf(7500,  0.47, TY,   R_PLANT),
-        kf(9000,  0.53, SY,   WIDE_ARMS),
-        kf(10500, 0.46, 0.54, SPLIT_RL),
+        kf(6800,  0.42, 0.54, R_LIFT),
+        kf(7600,  0.48, TY,   WIDE_ARMS),
+        kf(8500,  0.50, SY,   V_WIDE),
+        kf(9300,  0.50, SY,   WIDE_ARMS),
+        kf(10200, 0.48, 0.53, SPLIT_RL),
+        kf(11200, 0.42, 0.55, L_REACH_DOWN),
         kf(12000, 0.38, FY,   STAND),
       ],
     },
@@ -691,14 +755,14 @@ export const stepAerobicDrills: Drill[] = [
         kf(3500,  0.41, 0.55, L_REACH_DOWN),
         kf(4000,  0.38, FY,   STAND),
         // ── Phase 2: V-Step x2 (counts 9-16) ──
-        kf(4500,  0.40, 0.55, R_LIFT),
-        kf(5000,  0.53, SY,   WIDE_ARMS),
-        kf(5500,  0.46, 0.54, SPLIT_RL),
-        kf(6000,  0.38, FY,   STAND),
-        kf(6500,  0.50, 0.50, L_LIFT),
-        kf(7000,  0.53, SY,   WIDE_ARMS),
-        kf(7500,  0.41, 0.55, L_REACH_DOWN),
-        kf(8000,  0.38, FY,   STAND),
+        kf(4500,  0.42, 0.54, R_LIFT),
+        kf(5000,  0.50, SY,   V_WIDE),
+        kf(5500,  0.48, 0.53, SPLIT_RL),
+        kf(6000,  0.42, FY,   STAND),
+        kf(6500,  0.45, 0.54, L_LIFT),
+        kf(7000,  0.50, SY,   V_WIDE),
+        kf(7500,  0.45, 0.55, L_REACH_DOWN),
+        kf(8000,  0.42, FY,   STAND),
         // ── Phase 3: A-Step x2 (counts 17-24) ──
         kf(8500,  0.40, 0.55, R_LIFT),
         kf(9000,  0.53, SY,   STAND),
@@ -709,13 +773,15 @@ export const stepAerobicDrills: Drill[] = [
         kf(11500, 0.41, 0.55, L_REACH_DOWN),
         kf(12000, 0.38, FY,   STAND),
         // ── Phase 4: Turn Step x2 (counts 25-32) ──
-        kf(12500, 0.40, 0.55, R_LIFT),
+        kf(12500, 0.42, 0.54, R_LIFT),
         kf(13000, 0.53, SY,   TURN_STEP),
-        kf(13500, 0.46, 0.54, SPLIT_RL),
+        kf(13300, 0.55, SY,   TURN_MID),
+        kf(13700, 0.46, 0.54, SPLIT_RL),
         kf(14000, 0.38, FY,   STAND),
-        kf(14500, 0.40, 0.55, R_LIFT),
+        kf(14500, 0.42, 0.54, R_LIFT),
         kf(15000, 0.53, SY,   TURN_STEP),
-        kf(15500, 0.41, 0.55, L_REACH_DOWN),
+        kf(15300, 0.55, SY,   TURN_MID),
+        kf(15700, 0.41, 0.55, L_REACH_DOWN),
         kf(16000, 0.38, FY,   STAND),
       ],
     },
