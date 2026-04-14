@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { getDrillById } from '../data';
@@ -18,7 +18,7 @@ export function AnimationPage() {
 
   const hasBehind = !!drill?.animation?.behindKeyframes;
 
-  const effectiveAnimation = useMemo(() => {
+  const effectiveAnimation = (() => {
     if (!drill?.animation) return undefined;
     if (perspective === 'behind' && drill.animation.behindKeyframes) {
       return {
@@ -28,7 +28,7 @@ export function AnimationPage() {
       };
     }
     return drill.animation;
-  }, [drill?.animation, perspective]);
+  })();
 
   const controls = useAnimationLoop(effectiveAnimation);
 

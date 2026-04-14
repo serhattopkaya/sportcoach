@@ -7,10 +7,6 @@ const difficultyColors: Record<Difficulty, { bg: string; text: string }> = {
   advanced: { bg: '#fecaca', text: '#991b1b' },
 };
 
-export function getDifficultyColors(difficulty: Difficulty) {
-  return difficultyColors[difficulty];
-}
-
 export function DifficultyBadge({ difficulty, size = 'sm' }: { difficulty: Difficulty; size?: 'xs' | 'sm' }) {
   const { t } = useTranslation();
   const colors = difficultyColors[difficulty];
