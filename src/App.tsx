@@ -8,6 +8,10 @@ const DrillLibraryPage = lazy(() => import('./pages/DrillLibraryPage').then((m) 
 const DrillDetailPage = lazy(() => import('./pages/DrillDetailPage').then((m) => ({ default: m.DrillDetailPage })));
 const GuidePage = lazy(() => import('./pages/GuidePage').then((m) => ({ default: m.GuidePage })));
 const AnimationPage = lazy(() => import('./pages/AnimationPage').then((m) => ({ default: m.AnimationPage })));
+const QuizListPage = lazy(() => import('./pages/QuizListPage').then((m) => ({ default: m.QuizListPage })));
+const QuizInfoPage = lazy(() => import('./pages/QuizInfoPage').then((m) => ({ default: m.QuizInfoPage })));
+const QuizPlayPage = lazy(() => import('./pages/QuizPlayPage').then((m) => ({ default: m.QuizPlayPage })));
+const QuizResultPage = lazy(() => import('./pages/QuizResultPage').then((m) => ({ default: m.QuizResultPage })));
 
 function Loading() {
   return (
@@ -30,6 +34,10 @@ export default function App() {
             <Route path="drill/:drillId" element={<DrillDetailPage />} />
             <Route path="drill/:drillId/guide" element={<GuidePage />} />
             <Route path="drill/:drillId/animation" element={<AnimationPage />} />
+            <Route path="quiz" element={<QuizListPage />} />
+            <Route path="quiz/:quizId" element={<QuizInfoPage />} />
+            <Route path="quiz/:quizId/play" element={<QuizPlayPage />} />
+            <Route path="quiz/:quizId/result" element={<QuizResultPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

@@ -11,3 +11,4 @@ export type {
   GuideData,
   GuideStep,
 } from './drill';
+export type { QuizDifficulty, Quiz, InfoCard, Question } from './quiz';

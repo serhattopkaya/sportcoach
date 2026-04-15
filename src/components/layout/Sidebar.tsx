@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router';
 import { useAppStore } from '../../store/useAppStore';
 import { sports } from '../../data/sports';
-import { getDrillsBySport } from '../../data';
+import { getDrillsBySport, getQuizzesBySport } from '../../data';
 import { sportColors } from '../../lib/color-palette';
 import { DifficultyBadge } from '../common/DifficultyBadge';
 import type { DrillCategory } from '../../types';
@@ -16,6 +16,7 @@ export function Sidebar() {
 
   const sport = sports.find((s) => s.id === selectedSport);
   const drills = getDrillsBySport(selectedSport);
+  const quizzes = getQuizzesBySport(selectedSport);
   const colors = sportColors[selectedSport];
 
   const filteredDrills = useMemo(
@@ -79,6 +80,27 @@ export function Sidebar() {
           );
         })}
       </div>
+
+      {quizzes.length > 0 && (
+        <div className="p-3 border-t border-slate-100 shrink-0">
+          <button
+            onClick={() => navigate('/quiz')}
+            className="w-full p-3 rounded-lg text-left transition-all min-h-[48px] flex items-center gap-2"
+            style={{
+              backgroundColor: location.pathname.startsWith('/quiz') ? colors.light : 'transparent',
+              borderLeft: location.pathname.startsWith('/quiz') ? `3px solid ${colors.bg}` : '3px solid transparent',
+            }}
+          >
+            <span className="text-lg">🧠</span>
+            <div>
+              <div className="font-medium text-sm text-slate-800">{t('nav.quiz')}</div>
+              <span className="text-[10px] text-slate-400">
+                {t('quiz.quizCount', { count: quizzes.length })}
+              </span>
+            </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
